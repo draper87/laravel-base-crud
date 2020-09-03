@@ -38,19 +38,14 @@ class MovieController extends Controller
     public function store(Request $request)
     {
         // validiamo i dati inseriti dall utente
-        $request->validate([
-          'titolo' => 'required|max:255',
-          'year' => 'required|integer|max:2020',
-          'description' => 'required',
-          'rating' => 'required|integer|min:0|max:10'
-        ]);
+        $request->validate($this->getValidationRules());
 
         // se i dati sono corretti li mettiamo dentro una variabile
         $dati = $request->all();
 
         // creiamo una nuova istanza della classe Movie
         $new_movie = new Movie();
-        
+
         // posso usare questo metodo per passare i dati
         // $new_movie->titolo = $dati['titolo'];
         // $new_movie->year = $dati['year'];
@@ -63,9 +58,12 @@ class MovieController extends Controller
         // poi procediamo con il salvataggio nel database
         $new_movie->save();
 
-        // preleviamo il record piu recente del database e lo utilizziamo per fare un redirect alla sua pagina
-        $movie = Movie::orderBy('id', 'desc')->first();
-        return redirect()->route('movies.show', $movie->id);
+        // Se il salvataggio va a buon fine $new_movie restituira 'true', possiamo quindi utilizzare un condizionale per prelevare il record piu recente del database e utilizzarlo per fare un redirect alla sua pagina
+        if ($new_movie) {
+          $movie = Movie::orderBy('id', 'desc')->first();
+          return redirect()->route('movies.show', $movie->id);
+        }
+
     }
 
     /**
@@ -87,7 +85,8 @@ class MovieController extends Controller
      */
     public function edit($id)
     {
-        //
+        $movie = Movie::find($id);
+        return view('movies.edit', compact('movie'));
     }
 
     /**
@@ -99,7 +98,21 @@ class MovieController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $movie = Movie::find($id);
+
+        // validiamo i dati inseriti dall utente
+        $request->validate($this->getValidationRules());
+
+        // prelevo i dati ricevuti dal form e aggiorno il database
+        $dati_update = $request->all();
+        $movie->update($dati_update);
+
+        // ritorno alla pagina principale se la modifica e avvenuta con successo
+        if ($movie) {
+          $movies = Movie::all();
+          return view('movies.index', compact('movies'));
+        }
+
     }
 
     /**
@@ -110,6 +123,25 @@ class MovieController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $movie = Movie::find($id);
+
+        // elimino il record dal database
+        $movie->delete();
+
+        // ritorno alla pagina principale
+        if ($movie) {
+          $movies = Movie::all();
+          return view('movies.index', compact('movies'));
+        }
+    }
+
+    // creiamo una funzione che torna i parametri per la validazione
+    public function getValidationRules() {
+      return [
+        'titolo' => 'required|max:255',
+        'year' => 'required|integer|max:2020',
+        'description' => 'required',
+        'rating' => 'required|integer|min:0|max:10'
+      ];
     }
 }
