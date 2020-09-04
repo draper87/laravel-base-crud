@@ -1,0 +1,58 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+}
+
+header {
+  background-color: #0089BA;
+  color: white;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.film {
+  margin: 30px 30px;
+}
+
+.film .submit {
+  padding: 0;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  background: none;
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #0089BA;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+}
+
+.film ul {
+  padding: 10px 0;
+}
+
+.film ul li {
+  padding: 10px 0;
+  color: blue;
+  list-style: none;
+}
+
+.film ul li a {
+  text-decoration: none;
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #0089BA;
+  border-radius: 5px;
+  color: white;
+}
+
+.film ul li form {
+  display: inline-block;
+}
+
